@@ -60,11 +60,6 @@ class PostFormsTests(TestCase):
             'text': 'Тестовый текст',
             'image': uploaded,
         }
-        response = self.guest_client.post(
-            reverse('posts:post_create'),
-            data=form_data,
-            follow=True
-        )
         response = self.authorized_client.post(
             reverse('posts:post_create'),
             data=form_data,
