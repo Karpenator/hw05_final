@@ -6,7 +6,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from posts.forms import PostForm
 from http import HTTPStatus
 from django.core.cache import cache
 
@@ -99,7 +98,7 @@ class PostFormsTests(TestCase):
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True
-        )        
+        )
         response = self.guest_client.post(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,

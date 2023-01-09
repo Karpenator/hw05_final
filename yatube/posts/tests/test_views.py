@@ -303,7 +303,7 @@ class PaginatorViewsTest(TestCase):
             reverse('posts:profile',
                     kwargs={'username': PaginatorViewsTest.user})
             + '?page=2')
-        self.assertEqual(len(response.context['page_obj']), 3)        
+        self.assertEqual(len(response.context['page_obj']), 3)
         Follow.objects.create(user=self.user, author=follow_user)
         response = self.guest_client.get(
             reverse('posts:profile',
