@@ -8,6 +8,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from posts.forms import PostForm
 from http import HTTPStatus
+from django.core.cache import cache
 
 from posts.models import Post, Group
 
@@ -27,9 +28,10 @@ class PostFormsTests(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
-        cls.form = PostForm()
 
     def setUp(self):
+        cache.clear()
+        self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -59,6 +61,11 @@ class PostFormsTests(TestCase):
             'text': 'Тестовый текст',
             'image': uploaded,
         }
+        response = self.guest_client.post(
+            reverse('posts:post_create'),
+            data=form_data,
+            follow=True
+        )
         response = self.authorized_client.post(
             reverse('posts:post_create'),
             data=form_data,
@@ -89,6 +96,11 @@ class PostFormsTests(TestCase):
         }
         original_post_text = self.post.text
         response = self.authorized_client.post(
+            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
+            data=form_data,
+            follow=True
+        )        
+        response = self.guest_client.post(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
             data=form_data,
             follow=True

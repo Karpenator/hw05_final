@@ -8,6 +8,7 @@ from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from posts.models import Post, Group, Comment, Follow
+from django.core.cache import cache
 
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -27,6 +28,7 @@ class PostPagesTests(TestCase):
         )
 
     def setUp(self):
+        cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
         small_gif = (
@@ -37,7 +39,7 @@ class PostPagesTests(TestCase):
             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
             b'\x0A\x00\x3B'
         )
-        uploaded = SimpleUploadedFile(
+        self.uploaded = SimpleUploadedFile(
             name='small.gif',
             content=small_gif,
             content_type='image/gif',
@@ -46,7 +48,7 @@ class PostPagesTests(TestCase):
             author=self.user,
             text='Тестовый текст',
             group=self.group,
-            image=uploaded,
+            image=self.uploaded,
         )
         self.comment = Comment.objects.create(
             text='Тестовый комментрий',
@@ -255,6 +257,8 @@ class PaginatorViewsTest(TestCase):
              for i in range(NUMBER_OF_PAGINATED_POSTS)])
 
     def setUp(self):
+        cache.clear()
+        self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -296,6 +300,16 @@ class PaginatorViewsTest(TestCase):
                     kwargs={'username': PaginatorViewsTest.user}))
         self.assertEqual(len(response.context['page_obj']), 10)
         response = self.authorized_client.get(
+            reverse('posts:profile',
+                    kwargs={'username': PaginatorViewsTest.user})
+            + '?page=2')
+        self.assertEqual(len(response.context['page_obj']), 3)        
+        Follow.objects.create(user=self.user, author=follow_user)
+        response = self.guest_client.get(
+            reverse('posts:profile',
+                    kwargs={'username': PaginatorViewsTest.user}))
+        self.assertEqual(len(response.context['page_obj']), 10)
+        response = self.guest_client.get(
             reverse('posts:profile',
                     kwargs={'username': PaginatorViewsTest.user})
             + '?page=2')
