@@ -79,7 +79,7 @@ class PostFormsTests(TestCase):
 
     def test_post_edit(self):
         '''Проверка post_edit: валидноcть формы и изменение поста'''
-        post = Post.objects.create(
+        post_test = Post.objects.create(
             author=PostFormsTests.user,
             text='Тестовый текст',
             group=PostFormsTests.group
