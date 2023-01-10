@@ -70,5 +70,6 @@ class PostModelTest(TestCase):
         )
 
         self.assertTrue(
-            Follow.objects.get(user=PostModelTest.user, author=PostModelTest.author)
+            Follow.objects.get(user=PostModelTest.user,
+                               author=PostModelTest.author)
         )

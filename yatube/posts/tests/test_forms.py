@@ -90,12 +90,14 @@ class PostFormsTests(TestCase):
         }
         original_post_text = self.post.text
         response = self.authorized_client.post(
-            reverse('posts:post_edit', kwargs={'post_id': PostFormsTests.post.id}),
+            reverse('posts:post_edit',
+                    kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
         response = self.guest_client.post(
-            reverse('posts:post_edit', kwargs={'post_id': PostFormsTests.post.id}),
+            reverse('posts:post_edit',
+                    kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
