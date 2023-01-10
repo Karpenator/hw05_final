@@ -73,22 +73,22 @@ class PostFormsTests(TestCase):
             self.assertTrue(
                 Post.objects.filter(
                     text='Тестовый текст',
-                    author=PostFormsTests.user,
+                    author=self.user,
                     image='posts/small.gif'
                 ).exists())
 
     def test_post_edit(self):
         '''Проверка post_edit: валидноcть формы и изменение поста'''
-        post_test = Post.objects.create(
-            author=PostFormsTests.user,
+        post = Post.objects.create(
+            author=self.user,
             text='Тестовый текст',
-            group=PostFormsTests.group
+            group=self.group
         )
         form_data = {
-            'author': PostFormsTests.user,
+            'author': self.user,
             'text': 'Измененный текст'
         }
-        original_post_text = self.post.text
+        original_post_text = post.text
         response = self.authorized_client.post(
             reverse('posts:post_edit',
                     kwargs={'post_id': PostFormsTests.post.id}),
@@ -102,7 +102,7 @@ class PostFormsTests(TestCase):
             follow=True
         )
         if response.status_code == HTTPStatus.OK:
-            self.post.refresh_from_db()
-            changed_post_text = self.post.text
+            post.refresh_from_db()
+            changed_post_text = post.text
             self.assertNotEqual(
                 changed_post_text, original_post_text, 'Пост не изменен')
