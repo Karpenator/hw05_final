@@ -65,10 +65,10 @@ class PostModelTest(TestCase):
 
     def test_follow(self):
         Follow.objects.create(
-            user=self.user,
-            author=self.author
+            user=PostModelTest.user,
+            author=PostModelTest.author
         )
 
         self.assertTrue(
-            Follow.objects.get(user=self.user, author=self.author)
+            Follow.objects.get(user=PostModelTest.user, author=PostModelTest.author)
         )

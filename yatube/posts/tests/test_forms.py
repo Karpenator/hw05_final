@@ -68,34 +68,34 @@ class PostFormsTests(TestCase):
 
         if response.status_code == HTTPStatus.OK:
             self.assertRedirects(response, reverse(
-                'posts:profile', kwargs={'username': self.user}))
+                'posts:profile', kwargs={'username': PostFormsTests.user}))
             self.assertEqual(Post.objects.count(), posts_count + 1)
             self.assertTrue(
                 Post.objects.filter(
                     text='Тестовый текст',
-                    author=self.user,
+                    author=PostFormsTests.user,
                     image='posts/small.gif'
                 ).exists())
 
     def test_post_edit(self):
         '''Проверка post_edit: валидноcть формы и изменение поста'''
-        self.post = Post.objects.create(
-            author=self.user,
+        post = Post.objects.create(
+            author=PostFormsTests.user,
             text='Тестовый текст',
-            group=self.group
+            group=PostFormsTests.group
         )
         form_data = {
-            'author': self.user,
+            'author': PostFormsTests.user,
             'text': 'Измененный текст'
         }
         original_post_text = self.post.text
         response = self.authorized_client.post(
-            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
+            reverse('posts:post_edit', kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
         response = self.guest_client.post(
-            reverse('posts:post_edit', kwargs={'post_id': self.post.id}),
+            reverse('posts:post_edit', kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
