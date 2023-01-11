@@ -55,7 +55,7 @@ class PostURLTests(TestCase):
         self.guest_client = Client()
         self.user = User.objects.get(username='UserTest')
         self.authorized_client = Client()
-        self.authorized_client.force_login(self.user)
+        self.authorized_client.force_login(PostURLTests.user)
         self.user_new = User.objects.create_user(username='User_not_author')
 
     def test_unexisting_page_authorized(self):

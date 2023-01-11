@@ -32,7 +32,7 @@ class PostFormsTests(TestCase):
         cache.clear()
         self.guest_client = Client()
         self.authorized_client = Client()
-        self.authorized_client.force_login(self.user)
+        self.authorized_client.force_login(PostFormsTests.user)
 
     @classmethod
     def tearDownClass(cls):
@@ -56,7 +56,7 @@ class PostFormsTests(TestCase):
             content_type='image/gif'
         )
         form_data = {
-            'author': self.user,
+            'author': PostFormsTests.user,
             'text': 'Тестовый текст',
             'image': uploaded,
         }
@@ -73,36 +73,36 @@ class PostFormsTests(TestCase):
             self.assertTrue(
                 Post.objects.filter(
                     text='Тестовый текст',
-                    author=self.user,
+                    author=PostFormsTests.user,
                     image='posts/small.gif'
                 ).exists())
 
     def test_post_edit(self):
         '''Проверка post_edit: валидноcть формы и изменение поста'''
         self.post = Post.objects.create(
-            author=self.user,
+            author=PostFormsTests.user,
             text='Тестовый текст',
-            group=self.group
+            group=PostFormsTests.group
         )
         form_data = {
-            'author': self.user,
+            'author': PostFormsTests.user,
             'text': 'Измененный текст'
         }
-        original_post_text = self.post.text
+        original_post_text = PostFormsTests.post.text
         response = self.authorized_client.post(
             reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}),
+                    kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
         response = self.guest_client.post(
             reverse('posts:post_edit',
-                    kwargs={'post_id': self.post.id}),
+                    kwargs={'post_id': PostFormsTests.post.id}),
             data=form_data,
             follow=True
         )
         if response.status_code == HTTPStatus.OK:
             self.post.refresh_from_db()
-            changed_post_text = self.post.text
+            changed_post_text = PostFormsTests.post.text
             self.assertNotEqual(
                 changed_post_text, original_post_text, 'Пост не изменен')
