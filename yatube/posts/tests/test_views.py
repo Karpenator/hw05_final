@@ -25,7 +25,7 @@ class PostPagesTests(TestCase):
             title='Тестовая группа',
             slug='test-slug',
             description='Тестовое описание',
-        )    
+        )
         cls.post = Post.objects.create(
             author=PostPagesTests.user,
             text='Тестовый текст',
@@ -100,7 +100,8 @@ class PostPagesTests(TestCase):
     def test_group_posts_page_show_correct_context(self):
         """Шаблон group_posts сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:group_posts', kwargs={'slug': PostPagesTests.group.slug})
+            reverse('posts:group_posts',
+                    kwargs={'slug': PostPagesTests.group.slug})
         )
         first_object = response.context['page_obj'][0]
         second_object = response.context['group']
@@ -136,7 +137,8 @@ class PostPagesTests(TestCase):
     def test_post_detail_page_show_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:post_detail', kwargs={'post_id': PostPagesTests.post.id}))
+            reverse('posts:post_detail',
+                    kwargs={'post_id': PostPagesTests.post.id}))
         post_text = response.context['post'].text
         post_author = response.context['post'].author
         post_image = response.context['post'].image
@@ -160,7 +162,8 @@ class PostPagesTests(TestCase):
     def test_post_edit_page_show_correct_context(self):
         """Шаблон post_edit сформирован с правильным контекстом."""
         response = self.authorized_client.get(
-            reverse('posts:post_edit', kwargs={'post_id': PostPagesTests.post.id}))
+            reverse('posts:post_edit',
+                    kwargs={'post_id': PostPagesTests.post.id}))
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
@@ -180,7 +183,8 @@ class PostPagesTests(TestCase):
     def test_group_posts_has_new_post(self):
         """На странице группы отображается созданный пост"""
         response = self.authorized_client.get(
-            reverse('posts:group_posts', kwargs={'slug': PostPagesTests.group.slug})
+            reverse('posts:group_posts',
+                    kwargs={'slug': PostPagesTests.group.slug})
         )
         for post in response.context['page_obj']:
             if post == self.post:
@@ -203,7 +207,8 @@ class PostPagesTests(TestCase):
     def test_post_detail_url_has_new_comment(self):
         """На странице поста отображается созданный комментарий"""
         response = self.authorized_client.get(
-            reverse('posts:post_detail', kwargs={'post_id': PostPagesTests.post.id})
+            reverse('posts:post_detail',
+                    kwargs={'post_id': PostPagesTests.post.id})
         )
         for comment in response.context['comments']:
             if comment == PostPagesTests.comment:
