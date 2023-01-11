@@ -30,7 +30,7 @@ class PostPagesTests(TestCase):
             author=PostPagesTests.user,
             text='Тестовый текст',
             group=PostPagesTests.group,
-            image=PostPagesTests.uploaded,
+            image=PostPagesTests.image,
         )
         cls.comment = Comment.objects.create(
             text='Тестовый комментрий',
@@ -50,7 +50,7 @@ class PostPagesTests(TestCase):
             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
             b'\x0A\x00\x3B'
         )
-        self.uploaded = SimpleUploadedFile(
+        self.image = SimpleUploadedFile(
             name='small.gif',
             content=small_gif,
             content_type='image/gif',
