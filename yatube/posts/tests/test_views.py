@@ -26,11 +26,24 @@ class PostPagesTests(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
+        small_gif = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
+        cls.uploaded = SimpleUploadedFile(
+            name='small.gif',
+            content=small_gif,
+            content_type='image/gif',
+        )
         cls.post = Post.objects.create(
             author=PostPagesTests.user,
             text='Тестовый текст',
             group=PostPagesTests.group,
-            image=PostPagesTests.image,
+            image=PostPagesTests.uploaded,
         )
         cls.comment = Comment.objects.create(
             text='Тестовый комментрий',
@@ -42,19 +55,6 @@ class PostPagesTests(TestCase):
         cache.clear()
         self.authorized_client = Client()
         self.authorized_client.force_login(PostPagesTests.user)
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
-        self.image = SimpleUploadedFile(
-            name='small.gif',
-            content=small_gif,
-            content_type='image/gif',
-        )
 
     @classmethod
     def tearDownClass(cls):

@@ -27,6 +27,11 @@ class PostFormsTests(TestCase):
             slug='test-slug',
             description='Тестовое описание',
         )
+        cls.post = Post.objects.create(
+            author=PostFormsTests.user,
+            text='Тестовый текст',
+            group=PostFormsTests.group
+        )
 
     def setUp(self):
         cache.clear()
@@ -79,11 +84,6 @@ class PostFormsTests(TestCase):
 
     def test_post_edit(self):
         '''Проверка post_edit: валидноcть формы и изменение поста'''
-        self.post = Post.objects.create(
-            author=PostFormsTests.user,
-            text='Тестовый текст',
-            group=PostFormsTests.group
-        )
         form_data = {
             'author': PostFormsTests.user,
             'text': 'Измененный текст'
